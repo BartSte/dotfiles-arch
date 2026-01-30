@@ -1,0 +1,3 @@
+# vim:filetype=swayconfig 
+include ~/dotfiles-linux/sway/config
+xwayland disable

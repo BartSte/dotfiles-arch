@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+this_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$this_dir/helpers"
+
+lg "Configuring DNS using NetworkManager to block adult content"
+
+lg "Disabling systemd-resolved and dnsmasq. Only NetworkManager will is used for DNS who spins up its own dnsmasq instance"
+sudo systemctl stop systemd-resolved dnsmasq --now
+
+lg "Enabling NetworkManager"
+sudo systemctl enable NetworkManager
+reset_network_manager
+
+lg "Setting up DNS using NetworkManager"
+sudo mkdir -p /etc/NetworkManager/conf.d
+sudo mkdir -p /etc/NetworkManager/dnsmasq.d
+sudo cp -f "$this_dir/dnsmasq.conf" /etc/NetworkManager
+sudo cp -f "$this_dir/dns.conf" /etc/NetworkManager/conf.d
+sudo cp -f "$this_dir/blocked.txt" /etc/NetworkManager/dnsmasq.d
+
+lg "Restarting NetworkManager"
+sudo systemctl restart NetworkManager

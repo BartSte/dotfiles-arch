@@ -1,0 +1,12 @@
+bartste-prompts
+dnscacher
+icalendar
+ipython
+key2pane
+khal
+khalorg
+khard
+pygeneral
+trash-cli
+vdirsyncer
+vobject

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+lg "Linking waybar configs"
+mkdir -p ~/.config/waybar/
+ln -sf ~/dotfiles-linux/waybar/style.css ~/.config/waybar/style.css
+ln -sf ~/dotfiles-linux/waybar/config.json ~/.config/waybar/config.json

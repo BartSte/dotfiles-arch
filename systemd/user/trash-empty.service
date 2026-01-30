@@ -1,0 +1,11 @@
+[Unit]
+Description=Empty trash older than 7 days
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/trash-empty 7
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=timers.target

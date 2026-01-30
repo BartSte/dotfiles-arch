@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+URL="https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling-porn-social/hosts"
+IPSET="blocked"
+
+echo "Downloading blocklist from $URL, resolve the ips and store them in cache."
+dnscacher update "$URL"
+ipset-load "$IPSET"
+
+if ! sudo iptables -C INPUT -m set --match-set "$IPSET" src -j DROP &>/dev/null; then
+    echo "Adding iptables rule to drop packets from ipset $IPSET"
+    sudo iptables -I INPUT -m set --match-set "$IPSET" src -j DROP
+else
+    echo "All iptables rules needed already exist".
+fi
+
+echo "Saving iptables rules to /etc/iptables/iptables.rules"
+sudo iptables-save | sudo tee /etc/iptables/iptables.rules &>/dev/null
+
+echo "Enabling iptables and ipset-load services"
+sudo systemctl enable iptables --now
+systemctl --user enable ipset-load --now
+systemctl --user enable ipset-update --now

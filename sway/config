@@ -1,0 +1,95 @@
+# vim:filetype=swayconfig 
+font pango:Jetbrains Mono 10
+
+set $mod Mod4
+set $menu exec alacritty --class=launcher --command sway-launcher-desktop
+set $ws1 "T"
+set $ws2 "F"
+set $ws3 "S"
+set $ws4 "C"
+set $ws5 "X"
+set $ws6 "A"
+set $ws7 "Q"
+set $ws8 "W"
+
+title_align center
+
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+
+bindsym $mod+e focus up
+bindsym $mod+n focus down
+bindsym $mod+i focus right
+bindsym $mod+m focus left
+
+bindsym $mod+Up move up
+bindsym $mod+Down move down
+bindsym $mod+Right move right
+bindsym $mod+Left move left
+
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+
+bindsym $mod+F11 fullscreen toggle
+bindsym $mod+shift+e exit
+bindsym $mod+r mode "resize"
+
+bindsym $mod+space exec $menu
+bindsym Mod1+F4 kill
+bindsym Print exec screenshot "$HOME/Screenshots"
+bindsym $mod+Shift+s exec screenshot "$HOME/Screenshots"
+
+mode "resize" {
+        bindsym Left resize grow width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize shrink width 10 px or 10 ppt
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+
+# customize colors
+client.focused          #b8bb26 #b8bb26 #ebdbb2 #b8bb26 #b8bb26
+client.focused_inactive #282828 #282828 #ebdbb2 #282828 #282828
+client.unfocused        #282828 #282828 #ebdbb2 #282828 #282828
+client.urgent           #282828 #282828 #fb4934 #282828 #282828
+client.placeholder      #282828 #282828 #ebdbb2 #282828 #282828
+
+bindsym XF86AudioRaiseVolume exec "amixer -qD pulse sset Master 1%+"
+bindsym XF86AudioLowerVolume exec "amixer -qD pulse sset Master 1%-"
+bindsym XF86AudioMute exec "amixer -qD pulse sset Master toggle"
+bindsym XF86MonBrightnessUp exec brightnessctl s 5%+
+bindsym XF86MonBrightnessDown exec brightnessctl s 5%-
+
+assign [app_id="Alacritty"] workspace $ws1
+assign [app_id="firefox"] workspace $ws2
+assign [app_id="qutebrowser"] workspace $ws7
+
+for_window [app_id="^.*"] border pixel 0
+for_window [app_id="^launcher$"] floating enable, sticky enable, resize set 30 ppt 30 ppt, border pixel 3
+
+exec --no-startup-id waybar --config ~/.config/waybar/config.json
+exec --no-startup-id gammastep -m wayland -l 52.373882:6.891711 -t 6500:2500
+
+# Touchpad settings
+input "type:touchpad" {
+    dwt enabled
+    tap enabled
+    middle_emulation enabled
+    natural_scroll enabled
+}
+

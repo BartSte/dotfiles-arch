@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+dir=~/dotfiles-linux/arch
+
+. $dir/helpers.sh
+
+ensure_uv_config_exists() {
+    config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/uv"
+    config_file="$config_dir/config.toml"
+    lg "# Ensuring uv config file exists"
+    mkdir -p "$config_dir"
+    if [[ ! -f "$config_file" ]]; then
+        touch "$config_file"
+    fi
+}
+
+lg "# Updating pacman"
+sudo pacman -Syu --noconfirm
+
+lg "# Installing base dependencies pacman"
+sudo pacman -S --noconfirm $(cat "$dir/pacman.txt")
+
+lg "# Setup uv"
+ensure_uv_config_exists
+echo $(cat $dir/uv.txt) | xargs -n 1 uv tool install
+
+lg "# Installing dependencies AUR"
+install_yay /tmp/yay
+yay -S --noconfirm $(cat $dir/aur.txt)

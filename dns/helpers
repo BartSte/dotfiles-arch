@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+this_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+################################################################################
+# Reset NetworkManager and
+################################################################################
+reset_network_manager() {
+    if [ "$(systemctl is-enabled NetworkManager)" != "enabled" ]; then
+        lg "NetworkManager is not enabled. Exiting."
+        exit 1
+    fi
+
+    lg "Resetting NetworkManager"
+    sudo rm -f /etc/NetworkManager/NetworkManager.conf
+    sudo touch /etc/NetworkManager/NetworkManager.conf
+    echo -e "[main]\nplugins=keyfile" | sudo tee /etc/NetworkManager/NetworkManager.conf >/dev/null
+
+    sudo systemctl start NetworkManager
+    while [ "$(systemctl is-active NetworkManager)" != "active" ]; do
+        lg "Waiting for NetworkManager to start"
+        sleep 1
+    done
+
+    lg "Clearing per-connection DNS settings"
+    nmcli -t -f NAME connection show | while IFS= read -r conn; do
+        nmcli connection modify "$conn" ipv4.dns ""
+        nmcli connection modify "$conn" ipv4.ignore-auto-dns no
+    done
+
+    lg "NetworkManager reset completed."
+}
+

@@ -1,0 +1,133 @@
+* {
+    font-family: JetBrainsMono NF;
+    font-size: 16px;
+}
+
+window#waybar {
+    background-color: rgba(28, 28, 28, 1);
+    border-bottom: 0px solid rgba(28, 28, 28, 1);
+    color: #ffffff;
+    transition-duration: 0s;
+}
+
+button {
+    /* Avoid rounded borders under each button name */
+    /* Use box-shadow instead of border so the text isn't offset */
+    border: none;
+    border-radius: 0;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Moving left to rigth across the bar */
+#cpu, 
+#memory, 
+#window,
+#mode,
+#backlight,
+#pulseaudio, 
+#network,
+#battery, 
+#clock{
+    margin-right: 2px;
+    margin-left: 2px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+    color: white;
+}
+
+#cpu {
+    margin-left: 0;
+    box-shadow: inset 0 -2px cyan;
+}
+
+#memory {
+    box-shadow: inset 0 -2px magenta;
+}
+
+#window {
+    box-shadow: inset 0 -2px azure;
+}
+
+#mode {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#workspaces * {
+    font-size: 25px;
+    font-weight: 700;
+    margin: 0;
+}
+
+#workspaces button {
+    padding: 0 3px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    color: white;
+}
+
+#workspaces button.focused {
+    background-color: rgba(0, 150, 0, 0.5);
+}
+
+#workspaces button.urgent {
+    background-color: darkred;
+}
+
+#backlight {
+    box-shadow: inset 0 -2px yellow;
+}
+
+#pulseaudio {
+    box-shadow: inset 0 -2px lightblue;
+}
+
+#pulseaudio.muted {
+    background-color: red;
+}
+
+#pulseaudio.bluetooth {
+    background-color: rgba(0, 0, 120, 0.5);
+}
+
+#network {
+    box-shadow: inset 0 -2px red;
+}
+
+#network.disconnected {
+    background-color: rgba(100, 0, 0, 0.5);
+}
+
+#battery {
+    box-shadow: inset 0 -2px green;
+}
+
+#battery.charging, 
+#battery.plugged {
+    background-color: rgba(0, 100, 0, 0.5);
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+    }
+}
+
+#battery.critical:not(.charging) {
+    background-color: red;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+#clock {
+    margin-right: 0;
+    box-shadow: inset 0 -2px orange;
+}

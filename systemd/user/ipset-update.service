@@ -1,0 +1,10 @@
+[Unit]
+Description=Update the ipset partially after boot.
+After=ipset-load.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/barts/.local/bin/dnscacher refresh -p 10
+
+[Install]
+WantedBy=default.target

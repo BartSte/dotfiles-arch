@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+# Glob the directory ~/dotfiles-linux/systemd/user/ and store all files in an
+# array. Then copy each file to ~/.config/systemd/user. Overwrite existing
+# files. Next, enable each user script with:
+#   systemctl --user enable --now <script>
+#   systemctl --user start <script>
+#   systemctl --user status <script>
+enable_scripts_user() {
+    local script_dir systemd_dir files file
+    systemd_dir=$1
+    script_dir=$2
+
+    files=("$script_dir"/*)
+    for file in "${files[@]}"; do
+        lg "Copying $file to $systemd_dir"
+        cp -f "$file" "$systemd_dir"
+
+        lg "Enabling $file"
+        systemctl --user enable --now "$(basename "$file")"
+        systemctl --user start "$(basename "$file")"
+        systemctl --user status "$(basename "$file")" || lg "systemctl status exited with $?"
+    done
+}
+
+enable_scripts_root() {
+    local script_dir systemd_dir files file
+    systemd_dir=$1
+    script_dir=$2
+
+    files=("$script_dir"/*)
+    for file in "${files[@]}"; do
+        lg "Copying $file to $systemd_dir"
+        sudo cp -f "$file" "$systemd_dir"
+
+        lg "Enabling $file"
+        sudo systemctl enable --now "$(basename "$file")"
+        sudo systemctl start "$(basename "$file")"
+        sudo systemctl status "$(basename "$file")"
+    done
+}
+
+enable_bluetooth() {
+    sudo systemctl enable bluetooth.service
+    sudo systemctl start bluetooth.service
+}
+
+user_systemd_dir=~/.config/systemd/user
+user_script_dir=~/dotfiles-linux/systemd/user
+
+root_systemd_dir=/etc/systemd/system
+root_script_dir=~/dotfiles-linux/systemd/root
+
+lg "Creating $user_systemd_dir"
+mkdir -p "$user_systemd_dir"
+
+lg "Enabling user scripts from $user_script_dir"
+enable_scripts_user "$user_systemd_dir" "$user_script_dir"
+
+lg "Enabling root scripts from $root_script_dir"
+enable_scripts_root "$root_systemd_dir" "$root_script_dir"
+
+lg "Enabling bluetooth"
+enable_bluetooth
+
+sudo systemctl daemon-reload

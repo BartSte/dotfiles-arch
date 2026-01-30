@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Target = *
+
+[Action]
+Description = Prevent web browsers from being installed
+When = PreTransaction
+Exec = /usr/bin/bash -c 'if pacman -Qq | grep -E "firefox|chromium|browser"; then echo "Blocked package detected! Aborting."; exit 1; fi'
+

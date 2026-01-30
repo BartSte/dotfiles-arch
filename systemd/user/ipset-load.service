@@ -1,0 +1,12 @@
+[Unit]
+Description=Restore ipset sets at boot
+Before=iptables.service
+
+[Service]
+Type=oneshot
+Environment=/usr/lib/safe-rm:/usr/bin/vendor_perl:/home/barts/go/bin:/home/barts/.cargo/bin:/home/barts/.local/bin:/home/barts/dotfiles-linux/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/core_perl
+ExecStart=/home/barts/dotfiles-linux/bin/ipset-load blocked
+
+[Install]
+WantedBy=default.target
+

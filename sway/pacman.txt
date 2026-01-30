@@ -1,0 +1,16 @@
+alsa-utils
+bluez-utils
+brightnessctl
+gammastep
+imv
+noto-fonts-emoji
+pavucontrol
+pulseaudio
+pulseaudio-alsa
+pulseaudio-bluetooth
+qt5-wayland
+qt6-wayland
+sway
+waybar
+wayland
+wl-clipboard
