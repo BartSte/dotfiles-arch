@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-set -eo pipefail
-
-lg "Linking khalorg config"
-mkdir -p ~/.config/khalorg
-ln -sf ~/dotfiles-linux/khalorg/khalorg_format.txt ~/.config/khalorg/khalorg_format.txt
-

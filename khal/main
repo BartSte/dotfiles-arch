@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-set -eo pipefail
-
-lg "Linking khal config"
-mkdir -p ~/.config/khal
-ln -sf ~/dotfiles-linux/khal/config ~/.config/khal/config
