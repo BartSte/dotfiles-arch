@@ -1,0 +1,6 @@
+# vim: filetype=neomuttrc
+mailboxes =INBOX =Drafts ='Sent Items' =Deleted =Archive ='Junk Email'
+set postponed= +Drafts
+set record= +'Sent Items'
+set spoolfile= +INBOX
+set trash= +Deleted

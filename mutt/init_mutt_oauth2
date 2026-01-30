@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+account=${MICROSOFT_ACCOUNT:-}
+[[ -z $account ]] && {
+    echo "MICROSOFT_ACCOUNT not set"
+    exit 1
+}
+username=$(bw-cli-get username $account)
+token="$HOME/.config/neomutt/$username.tokens"
+
+rm "$token" 2>/dev/null || true
+mutt_oauth2 --verbose --authorize "$token"
