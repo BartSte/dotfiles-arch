@@ -9,7 +9,7 @@ rm -rf "$directory" || true
 rm -rf "$cache" || true
 
 mkdir -p "$directory"
-ln -sf "$HOME"/dotfiles-linux/mutt/muttrc "$directory"/muttrc
+ln -sf "$HOME"/dotfiles-arch/mutt/muttrc "$directory"/muttrc
 
 mkdir -p "$HOME"/.local/share/mail/INBOX
 mkdir -p "$cache"
