@@ -4,4 +4,4 @@ set -eo pipefail
 
 lg "Linking khal config"
 mkdir -p ~/.config/khal
-ln -sf ~/dotfiles-linux/khal/config ~/.config/khal/config
+ln -sf ~/dotfiles-arch/khal/config ~/.config/khal/config

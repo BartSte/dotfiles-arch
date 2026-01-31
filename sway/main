@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-dir=~/dotfiles-linux/sway
+dir=~/dotfiles-arch/sway
 
 mkdir -p ~/Screenshots
 sudo pacman -S --noconfirm - < $dir/pacman.txt

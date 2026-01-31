@@ -1,0 +1,52 @@
+name: test-dotfiles-arch
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  arch:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prep base deps
+        shell: bash
+        run: |
+          set -euo pipefail
+          pacman -Syu --noconfirm git curl sudo
+          # sudo shim (container runs as root)
+          echo -e '#!/bin/sh\nexec "$@"' > /usr/local/bin/sudo
+          chmod +x /usr/local/bin/sudo
+
+      - name: Run base initialize (curl)
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -O https://raw.githubusercontent.com/BartSte/dotfiles/master/dotfiles/initialize
+          bash ./initialize
+          rm ./initialize
+
+      - name: Checkout arch layer as bare repo
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --bare "$GITHUB_WORKSPACE" "$HOME/dotfiles-arch.git"
+          git --work-tree="$HOME" --git-dir="$HOME/dotfiles-arch.git" checkout -f
+
+      - name: Run dotfiles-arch main
+        shell: bash
+        run: |
+          set -euo pipefail
+          ~/dotfiles-arch/main
+
+      - name: Assertions
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$HOME/.dotfiles_config.sh"
+          command -v git
+          command -v pacman
+          test -e "$HOME/dotfiles-arch/main"

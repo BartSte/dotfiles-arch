@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-dir=~/dotfiles-linux/arch
+dir=~/dotfiles-arch/arch
 
 . $dir/helpers.sh
 

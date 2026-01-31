@@ -1,11 +1,11 @@
 # vim: filetype=neomuttrc
-source ~/dotfiles-linux/mutt/khard.muttrc
-source ~/dotfiles-linux/mutt/binds.muttrc
+source ~/dotfiles-arch/mutt/khard.muttrc
+source ~/dotfiles-arch/mutt/binds.muttrc
 
 # Style
-source ~/dotfiles-linux/mutt/colors-gruvbox-shuber.muttrc 
-source ~/dotfiles-linux/mutt/gruvbox-powerline.neomuttrc
-source ~/dotfiles-linux/mutt/powerline.neomuttrc
+source ~/dotfiles-arch/mutt/colors-gruvbox-shuber.muttrc 
+source ~/dotfiles-arch/mutt/gruvbox-powerline.neomuttrc
+source ~/dotfiles-arch/mutt/powerline.neomuttrc
 
 # Variables
 set my_email=`bw-cli-get username $MICROSOFT_ACCOUNT`
@@ -23,7 +23,7 @@ set forward_quote  # quote forwarded message
 set date_format = "%H:%M %d-%b-%y"
 set index_format=" %?M?   ↳&%4C?   %Z      %D     %-15.15n    %s"
 set mail_check=120  # check for new mail every 5 minutes
-set mailcap_path = "~/dotfiles-linux/mutt/mailcap"
+set mailcap_path = "~/dotfiles-arch/mutt/mailcap"
 set markers=no  # don't put '+' at the beginning of wrapped lines
 set menu_scroll  # scroll in menus
 set pager_context = 3  # number of context lines to show
@@ -61,7 +61,7 @@ set from = $my_email
 set hostname = `bw-cli-get Domain $MICROSOFT_ACCOUNT`
 set realname = "`bw-cli-get name $MICROSOFT_ACCOUNT`"
 set smtp_authenticators=`bw-cli-get MuttSmtpAuth $MICROSOFT_ACCOUNT`
-set smtp_oauth_refresh_command="~/dotfiles-linux/mutt/mutt_oauth2_with_token"
+set smtp_oauth_refresh_command="~/dotfiles-arch/mutt/mutt_oauth2_with_token"
 set smtp_pass = $my_password
 set smtp_url = "smtp://$my_email@smtp.office365.com:587/"
 set ssl_force_tls = yes
@@ -75,7 +75,7 @@ hdr_order from: to: cc: date: subject:  # header item ordering
 
 # Mailbox
 # The names of the mailboxes are different for accounts
-source "~/dotfiles-linux/mutt/mailboxes$MICROSOFT_ACCOUNT.muttrc"
+source "~/dotfiles-arch/mutt/mailboxes$MICROSOFT_ACCOUNT.muttrc"
 
 # Notmuch Config
 set nm_query_type=threads  # bring in the whole thread instead of just the matched message, really useful

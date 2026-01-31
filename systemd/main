@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-# Glob the directory ~/dotfiles-linux/systemd/user/ and store all files in an
+# Glob the directory ~/dotfiles-arch/systemd/user/ and store all files in an
 # array. Then copy each file to ~/.config/systemd/user. Overwrite existing
 # files. Next, enable each user script with:
 #   systemctl --user enable --now <script>
@@ -48,10 +48,10 @@ enable_bluetooth() {
 }
 
 user_systemd_dir=~/.config/systemd/user
-user_script_dir=~/dotfiles-linux/systemd/user
+user_script_dir=~/dotfiles-arch/systemd/user
 
 root_systemd_dir=/etc/systemd/system
-root_script_dir=~/dotfiles-linux/systemd/root
+root_script_dir=~/dotfiles-arch/systemd/root
 
 lg "Creating $user_systemd_dir"
 mkdir -p "$user_systemd_dir"
