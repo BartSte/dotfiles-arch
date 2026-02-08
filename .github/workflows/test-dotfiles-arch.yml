@@ -8,7 +8,7 @@ on:
 jobs:
   arch:
     runs-on: ubuntu-latest
-    container: archlinux:latest
+    container: archlinux:base-devel
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,6 +17,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          pacman-key --init
+          pacman-key --populate archlinux
           pacman -Syu --noconfirm git curl sudo
           # sudo shim (container runs as root)
           echo -e '#!/bin/sh\nexec "$@"' > /usr/local/bin/sudo
