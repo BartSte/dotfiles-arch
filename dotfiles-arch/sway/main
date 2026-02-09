@@ -2,6 +2,11 @@
 
 set -eo pipefail
 
+if is_running wsl; then
+  lg "Running in WSL, skipping DNS configuration"
+  exit 0
+fi
+
 dir=~/dotfiles-arch/sway
 
 mkdir -p ~/Screenshots

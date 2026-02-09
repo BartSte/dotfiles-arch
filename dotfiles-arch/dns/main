@@ -5,6 +5,11 @@ set -euo pipefail
 this_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$this_dir/helpers"
 
+if is_running wsl; then
+  lg "Running in WSL, skipping DNS configuration"
+  exit 0
+fi
+
 lg "Configuring DNS using NetworkManager to block adult content"
 
 lg "Disabling systemd-resolved and dnsmasq. Only NetworkManager will is used for DNS who spins up its own dnsmasq instance"

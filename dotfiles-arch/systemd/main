@@ -2,6 +2,48 @@
 
 set -eo pipefail
 
+had_error=0
+
+run_with_log() {
+    local description exit_code
+    description=$1
+    shift
+
+    set +e
+    "$@"
+    exit_code=$?
+    set -e
+
+    if [[ $exit_code -ne 0 ]]; then
+        lg "$description failed with exit code $exit_code"
+        had_error=1
+    fi
+
+    return 0
+}
+
+run_status_with_log() {
+    local description exit_code
+    description=$1
+    shift
+
+    set +e
+    "$@"
+    exit_code=$?
+    set -e
+
+    if [[ $exit_code -eq 0 || $exit_code -eq 3 ]]; then
+        if [[ $exit_code -eq 3 ]]; then
+            lg "$description returned exit code 3 (unit is inactive, expected for oneshot services)"
+        fi
+        return 0
+    fi
+
+    lg "$description failed with exit code $exit_code"
+    had_error=1
+    return 0
+}
+
 # Glob the directory ~/dotfiles-arch/systemd/user/ and store all files in an
 # array. Then copy each file to ~/.config/systemd/user. Overwrite existing
 # files. Next, enable each user script with:
@@ -9,19 +51,26 @@ set -eo pipefail
 #   systemctl --user start <script>
 #   systemctl --user status <script>
 enable_scripts_user() {
-    local script_dir systemd_dir files file
+    local script_dir systemd_dir files file basename
     systemd_dir=$1
     script_dir=$2
 
     files=("$script_dir"/*)
     for file in "${files[@]}"; do
+        basename=$(basename "$file")
+
+        if is_running wsl && [[ "$basename" =~ ^ipset-(load|update)\.service$ ]]; then
+            lg "Skipping $basename on WSL"
+            continue
+        fi
+
         lg "Copying $file to $systemd_dir"
-        cp -f "$file" "$systemd_dir"
+        run_with_log "Copying $file to $systemd_dir" cp -f "$file" "$systemd_dir"
 
         lg "Enabling $file"
-        systemctl --user enable --now "$(basename "$file")"
-        systemctl --user start "$(basename "$file")"
-        systemctl --user status "$(basename "$file")" || lg "systemctl status exited with $?"
+        run_with_log "Enabling $basename" systemctl --user enable --now "$basename"
+        run_with_log "Starting $basename" systemctl --user start "$basename"
+        run_status_with_log "Getting status for $basename" systemctl --user status "$basename"
     done
 }
 
@@ -33,18 +82,18 @@ enable_scripts_root() {
     files=("$script_dir"/*)
     for file in "${files[@]}"; do
         lg "Copying $file to $systemd_dir"
-        sudo cp -f "$file" "$systemd_dir"
+        run_with_log "Copying $file to $systemd_dir" sudo cp -f "$file" "$systemd_dir"
 
         lg "Enabling $file"
-        sudo systemctl enable --now "$(basename "$file")"
-        sudo systemctl start "$(basename "$file")"
-        sudo systemctl status "$(basename "$file")"
+        run_with_log "Enabling $(basename "$file")" sudo systemctl enable --now "$(basename "$file")"
+        run_with_log "Starting $(basename "$file")" sudo systemctl start "$(basename "$file")"
+        run_status_with_log "Getting status for $(basename "$file")" sudo systemctl status "$(basename "$file")"
     done
 }
 
 enable_bluetooth() {
-    sudo systemctl enable bluetooth.service
-    sudo systemctl start bluetooth.service
+    run_with_log "Enabling bluetooth.service" sudo systemctl enable bluetooth.service
+    run_with_log "Starting bluetooth.service" sudo systemctl start bluetooth.service
 }
 
 user_systemd_dir=~/.config/systemd/user
@@ -62,7 +111,15 @@ enable_scripts_user "$user_systemd_dir" "$user_script_dir"
 lg "Enabling root scripts from $root_script_dir"
 enable_scripts_root "$root_systemd_dir" "$root_script_dir"
 
-lg "Enabling bluetooth"
-enable_bluetooth
+if ! is_running wsl; then
+    lg "Enabling bluetooth"
+    enable_bluetooth
+fi
 
-sudo systemctl daemon-reload
+lg "Reloading systemd daemon"
+run_with_log "Reloading systemd daemon" sudo systemctl daemon-reload
+
+if [[ $had_error -ne 0 ]]; then
+    lg "systemd/main completed with one or more failures"
+    exit 1
+fi

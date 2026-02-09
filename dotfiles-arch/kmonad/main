@@ -2,6 +2,11 @@
 
 set -eo pipefail
 
+if is_running wsl; then
+  lg "Running in WSL, skipping DNS configuration"
+  exit 0
+fi
+
 sudo killall kmonad || true
 sudo systemctl disable kmonad.service || true
 
