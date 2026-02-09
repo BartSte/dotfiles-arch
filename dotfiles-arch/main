@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+usage="main [-h, --help]
+
+Runs the 'main' scripts in the ~/dotfiles-arch directory."
+
+DIR=~/dotfiles-arch
+. $DIR/../dotfiles-linux/home/.zshenv
+source ~/.dotfiles_config.sh
+
+if [[ $# -gt 0 ]]; then
+  case "$1" in
+    -h|--help)
+      echo "$usage"; exit 0;;
+    *)
+      echo "Unknown option: $1"; exit 1;;
+  esac
+fi
+
+# Run all module mains in this repo (front modules first if present)
+front=(arch systemd)
+
+mapfile -t all_dirs < <(find "$DIR" -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | sort)
+
+dirs=()
+for module in "${front[@]}"; do
+  [[ -d "$DIR/$module" ]] && dirs+=("$module")
+ done
+
+for dir in "${all_dirs[@]}"; do
+  [[ " ${front[*]} " =~ " $dir " ]] && continue
+  dirs+=("$dir")
+ done
+
+for module in "${dirs[@]}"; do
+  if [[ -f "$DIR/$module/main" ]]; then
+    echo "### Execute main: $module"
+    "$DIR/$module/main"
+  fi
+ done
