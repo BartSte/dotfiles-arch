@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     container: archlinux:base-devel
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Prep base deps
         shell: bash
         run: |
@@ -23,6 +20,9 @@ jobs:
           # sudo shim (container runs as root)
           echo -e '#!/bin/sh\nexec "$@"' > /usr/local/bin/sudo
           chmod +x /usr/local/bin/sudo
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Run base initialize (curl)
         shell: bash
