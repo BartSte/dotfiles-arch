@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+lg "Linking khard config"
+mkdir -p ~/.config/khard
+ln -sf ~/dotfiles-linux/khard/khard.conf ~/.config/khard/khard.conf
+

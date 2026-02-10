@@ -1,0 +1,47 @@
+# vim:filetype=dosini
+
+[general]
+status_path = "~/.config/vdirsyncer/status/"
+
+################################################################################
+# Calendar
+################################################################################
+[pair outlook]
+a = "outlook_local"
+b = "outlook_remote"
+collections = null
+conflict_resolution = "b wins"
+metadata = ["color", "displayname", "description", "order"]
+
+[storage outlook_local]
+type = "filesystem"
+path = "~/.local/share/calendar/outlook/"
+fileext = ".ics"
+read_only = false
+
+[storage outlook_remote]
+type = "caldav"
+url.fetch = ["shell", "bw-cli-get Calendar MicrosoftWork"]
+username.fetch = ["shell", "bw-cli-get Username MicrosoftWork"]
+password.fetch = ["shell", "bw-cli-get password MicrosoftWork"]
+read_only = false
+
+################################################################################
+# Contacts
+################################################################################
+[pair outlook_contacts]
+a = "outlook_contacts_local"
+b = "outlook_contacts_remote"
+collections = null
+conflict_resolution = "b wins"
+
+[storage outlook_contacts_remote]
+type = "carddav"
+url.fetch = ["shell", "bw-cli-get Contacts MicrosoftWork"]
+username.fetch = ["shell", "bw-cli-get Username MicrosoftWork"]
+password.fetch = ["shell", "bw-cli-get password MicrosoftWork"]
+
+[storage outlook_contacts_local]
+type = "filesystem"
+path = "~/.local/share/contacts/outlook/"
+fileext = ".vcf"

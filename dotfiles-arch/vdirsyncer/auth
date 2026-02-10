@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+display_help() {
+    cat <<EOF
+Usage: ${0##*/} [OPTION]
+Authenticate vdirsyncer via davmail and sync calendar.
+
+Options:
+  -h, --help    Show this help message
+EOF
+}
+
+confirm_action() {
+    read -p "$1 (y/n) " -n 1 -r
+    echo
+    [[ $REPLY =~ ^[Yy]$ ]]
+}
+
+run_davmail() {
+    alacritty -e bash -c "davmail ${HOME}/.config/davmail/davmail.properties" &
+    DAVMAIL_PID=$!
+    sleep 3
+}
+
+PROMPT="This script tries to authenticate for vdirsyncer using
+davmail. It will open a new shell where davmail is executed. Next, in this
+shell, 'vdirsyncer discover' will be called. If davmail is not yet
+authenticated, it will provide you with an instruction for authentication.
+Once completed, 'vdirsyncer' will be able to complete the discovery. Next
+'mycalsync' will synchronize the calendar."
+
+main() {
+    case "$1" in
+    -h | --help)
+        display_help
+        exit 0
+        ;;
+    *)
+          if confirm_action "$PROMPT"; then
+              run_davmail
+              vdirsyncer discover
+              mycalsync
+              kill $DAVMAIL_PID
+          fi
+        ;;
+    esac
+}
+
+main "$@"

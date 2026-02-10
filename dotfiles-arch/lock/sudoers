@@ -1,0 +1,2 @@
+Defaults!/usr/bin/chattr rootpw
+%wheel ALL=(ALL) NOPASSWD: ALL, !/usr/bin/chattr

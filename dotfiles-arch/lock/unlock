@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+this_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$this_dir/helpers"
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo "This script must be run as root"
+    exit 1
+fi
+
+echo "Unlocking DNS settings"
+chattr -i /etc/NetworkManager/NetworkManager.conf 
+chattr -i /etc/resolv.conf
+chattr -i /etc/sudoers

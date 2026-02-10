@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+. "$HOME"/dotfiles-linux/qutebrowser/helpers.sh
+
+lg "Qutebrowser: link config files"
+link_config
+
+lg "Qutebrowser: link bookmarks"
+link_bookmarks
+
+lg "Qutebrowser: link userscripts"
+link_userscripts

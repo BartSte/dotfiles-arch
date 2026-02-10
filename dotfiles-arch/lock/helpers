@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+this_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+################################################################################
+# Replace the /etc/sudoers file with the one at $this_dir/sudoers
+################################################################################
+update_sudoers() {
+    local target backup source
+    target="/etc/sudoers"
+    backup="/etc/sudoers.bak"
+    source="$this_dir/sudoers"
+
+    if [ ! -f "$source" ]; then
+        lg "The sudoers file $source does not exist. Exiting."
+        exit 1
+    fi
+
+    lg "Updating sudoers"
+    cp -f "$target" "$backup"
+    cp -f "$source" "$target"
+    chown root:root "$target"
+    chmod 440 "$target"
+
+    if ! visudo -c; then
+        lg "The sudoers file is not valid. Restoring the backup."
+        cp -f "$backup" "$target"
+        exit 1
+    fi
+}
+

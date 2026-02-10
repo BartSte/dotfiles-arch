@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+this_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$this_dir/helpers"
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo "This script must be run as root"
+    exit 1
+fi
+
+lg "Only the root user can use the chattr command from now on"
+update_sudoers
+
+echo "Locking DNS settings"
+files=(
+    /etc/resolv.conf
+    /etc/NetworkManager/dnsmasq.conf
+    /etc/NetworkManager/conf.d/dns.conf
+    /etc/NetworkManager/dnsmasq.d/blocked.txt
+    /etc/sudoers
+)
+for file in "${files[@]}"; do
+    lg "Locking $file"
+    chattr +i "$file"
+done

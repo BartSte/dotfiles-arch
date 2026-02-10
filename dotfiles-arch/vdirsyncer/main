@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+lg "Linking vdirsyncer config"
+mkdir -p ~/.config/vdirsyncer/
+ln -sf ~/dotfiles-linux/vdirsyncer/config ~/.config/vdirsyncer/config
