@@ -2,6 +2,13 @@
 
 set -eo pipefail
 
+this_dir="$(dirname "$(readlink -f "$BASH_SOURCE")")"
+
 lg "Linking vdirsyncer config"
 mkdir -p ~/.config/vdirsyncer/
-ln -sf ~/dotfiles-linux/vdirsyncer/config ~/.config/vdirsyncer/config
+ln -sf "$this_dir/config" ~/.config/vdirsyncer/config
+
+lg "Copying davmail configs"
+mkdir -p ~/.config/davmail/
+cp "$this_dir/davmail.work.properties" ~/.config/davmail/davmail.work.properties
+cp "$this_dir/davmail.personal.properties" ~/.config/davmail/davmail.personal.properties

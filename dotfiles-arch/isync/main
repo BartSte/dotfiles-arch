@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-source="$HOME/dotfiles-linux/isync/.mbsyncrc_$MICROSOFT_ACCOUNT"
+source="$HOME/dotfiles-arch/isync/.mbsyncrc_$MICROSOFT_ACCOUNT"
 destination="$HOME/.mbsyncrc"
 
 [ -f "$source" ] || {
