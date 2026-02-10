@@ -47,13 +47,24 @@ set wrap=0  # email view width
 unset collapse_unread
 unset mark_old
 
-# IMAP config
+# Mailbox
 set folder="~/.local/share/mail" # Since we download all our mail using mbsync, the folder points to a Maildir directory.
+set mbox_type = Maildir # Maildir is a generic and standardized format of storing emails.
+set spoolfile="=INBOX" # The spoolfile is the default mailbox that Mutt will open when it starts. In this case, it points to the INBOX folder within the Maildir directory.
+
+# Dynamically add every Maildir under $folder to the watch list
+# (NeoMutt polls these for new mail; also what sidebar is typically based on)
+mailboxes `find -L ~/.local/share/mail -type d -name cur -printf '%h\n' | sort -u | tr '\n' ' '`
+
+set sidebar_visible
+set sidebar_new_mail_only = no
+
+
+# IMAP config
 set header_cache="~/.cache/neomutt/header_cache"
 set imap_authenticators=`bw-cli-get MuttImapAuth $MICROSOFT_ACCOUNT`
 set imap_pass=$my_password
 set imap_user=$my_email
-set mbox_type = Maildir # Maildir is a generic and standardized format of storing emails.
 unset imap_idle # When set, NeoMutt will attempt to use the IMAP IDLE extension to check for new mail in the current mailbox. 
 
 # SMTP config
@@ -72,11 +83,6 @@ ignore *                                # ignore all headers
 unignore to: cc:                        # ..then selectively show only these headers
 unhdr_order *                           # some distros order things by default
 hdr_order from: to: cc: date: subject:  # header item ordering
-
-# Mailbox
-# The names of the mailboxes are different for accounts
-# source "~/dotfiles-arch/mutt/mailboxes$MICROSOFT_ACCOUNT.muttrc"
-set imap_check_subscribed
 
 # Notmuch Config
 set nm_query_type=threads  # bring in the whole thread instead of just the matched message, really useful

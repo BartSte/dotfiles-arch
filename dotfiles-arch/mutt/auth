@@ -6,7 +6,8 @@ this_dir=$(dirname $(realpath ${BASH_SOURCE:-$0}))
 
 lg "Setting permissions for GPG"
 chmod 700 ~/.gnupg
-chmod 600 ~/.gnupg/*
+find ~/.gnupg -type d -exec chmod 700 {} +
+find ~/.gnupg -type f -exec chmod 600 {} +
 
 lg "Setting up OAUTH2 for mutt. This requires user interaction."
 "$this_dir"/init_mutt_oauth2
