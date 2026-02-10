@@ -9,21 +9,21 @@ jobs:
   arch:
     runs-on: ubuntu-latest
     container: archlinux:base-devel
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    steps:(
+s*- name: Prep base deps
+s*shell: bash
+s*run: |
+s*s*set -euo pipefail
+s*s*pacman-key --init
+s*s*pacman-key --populate archlinux
+s*s*pacman -Syu --noconfirm git curl sudo
+s*s*# sudo shim (container runs as root)
+s*s*echo -e '#!/bin/sh\nexec "$@"' > /usr/local/bin/sudo
+s*s*chmod +x /usr/local/bin/sudo
 
-      - name: Prep base deps
-        shell: bash
-        run: |
-          set -euo pipefail
-          pacman-key --init
-          pacman-key --populate archlinux
-          pacman -Syu --noconfirm git curl sudo
-          # sudo shim (container runs as root)
-          echo -e '#!/bin/sh\nexec "$@"' > /usr/local/bin/sudo
-          chmod +x /usr/local/bin/sudo
-
+s*- name: Checkout
+s*uses: actions/checkout@v4
+)
       - name: Run base initialize (curl)
         shell: bash
         run: |
