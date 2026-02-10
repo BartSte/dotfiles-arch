@@ -75,7 +75,8 @@ hdr_order from: to: cc: date: subject:  # header item ordering
 
 # Mailbox
 # The names of the mailboxes are different for accounts
-source "~/dotfiles-arch/mutt/mailboxes$MICROSOFT_ACCOUNT.muttrc"
+# source "~/dotfiles-arch/mutt/mailboxes$MICROSOFT_ACCOUNT.muttrc"
+set imap_check_subscribed
 
 # Notmuch Config
 set nm_query_type=threads  # bring in the whole thread instead of just the matched message, really useful
