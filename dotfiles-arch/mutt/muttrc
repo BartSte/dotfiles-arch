@@ -44,6 +44,8 @@ set timeout=0 # This variable controls the number of seconds Mutt will wait for 
 set tmpdir="/tmp"
 set wait_key = no # Controls whether Mutt will ask you to press a key after shell- escape, pipe-message, pipe-entry, print-message, and print-entry commands.
 set wrap=0  # email view width
+set sidebar_visible
+set sidebar_new_mail_only = no
 unset collapse_unread
 unset mark_old
 
@@ -51,13 +53,9 @@ unset mark_old
 set folder="~/.local/share/mail" # Since we download all our mail using mbsync, the folder points to a Maildir directory.
 set mbox_type = Maildir # Maildir is a generic and standardized format of storing emails.
 set spoolfile="=INBOX" # The spoolfile is the default mailbox that Mutt will open when it starts. In this case, it points to the INBOX folder within the Maildir directory.
-
 # Dynamically add every Maildir under $folder to the watch list
 # (NeoMutt polls these for new mail; also what sidebar is typically based on)
-mailboxes `find -L ~/.local/share/mail -type d -name cur -printf '%h\n' | sort -u | tr '\n' ' '`
-
-set sidebar_visible
-set sidebar_new_mail_only = no
+mailboxes `find -L ~/.local/share/mail -type d -name cur -printf '%h\n' | sed 's/ /\\ /g' | sort -u | tr '\n' ' '`
 
 
 # IMAP config
@@ -66,6 +64,7 @@ set imap_authenticators=`bw-cli-get MuttImapAuth $MICROSOFT_ACCOUNT`
 set imap_pass=$my_password
 set imap_user=$my_email
 unset imap_idle # When set, NeoMutt will attempt to use the IMAP IDLE extension to check for new mail in the current mailbox. 
+unset imap_list_subscribed # When set, Mutt will only list subscribed mailboxes when using IMAP. Since we're using Maildir, we want to see all mailboxes, so we unset this option.
 
 # SMTP config
 set from = $my_email
@@ -76,7 +75,6 @@ set smtp_oauth_refresh_command="~/dotfiles-arch/mutt/mutt_oauth2_with_token"
 set smtp_pass = $my_password
 set smtp_url = "smtp://$my_email@smtp.office365.com:587/"
 set ssl_force_tls = yes
-set ssl_use_sslv3=yes
 
 # Header Options
 ignore *                                # ignore all headers
@@ -89,6 +87,7 @@ set nm_query_type=threads  # bring in the whole thread instead of just the match
 set nm_default_url = "notmuch:///$HOME/.local/share/mail"  # default notmuch URL
 set nm_record_tags = "sent"  # default 'sent' tag
 set virtual_spoolfile=yes  # allow using virtual mailboxes as spoolfile 
+set vfolder_format = "%4n %f %8m %s"
 
 # Content/Autoview
 auto_view application/ics
