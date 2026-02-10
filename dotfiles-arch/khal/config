@@ -1,10 +1,15 @@
 # vim:filetype=dosini
 [calendars]
 
-[[outlook_local]]
-path = ~/.local/share/calendar/outlook/
+[[outlook_work]]
+path = ~/.local/share/calendar/outlook_work/
 type = calendar
 color = light green
+
+[[outlook_personal]]
+path = ~/.local/share/calendar/outlook_personal/
+type = calendar
+color = light blue
 
 [locale]
 timeformat = %H:%M
@@ -15,7 +20,7 @@ longdatetimeformat = %Y-%m-%d %a %H:%M
 weeknumbers = right
 
 [default]
-default_calendar = outlook_local
+default_calendar = outlook_work
 highlight_event_days = True
 show_all_days = False
 
