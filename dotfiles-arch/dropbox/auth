@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-set -eo pipefail
-
-lg "Creating a new rclone configuration for Dropbox"
-mkdir -p "$HOME/.config/rclone" || true
-mkdir -p "$HOME/dropbox" || true
-rclone config create dropbox dropbox && rclone sync dropbox: "$HOME/dropbox"
