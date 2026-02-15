@@ -17,8 +17,11 @@ link_config() {
 }
 
 link_bookmarks() {
-    target_urls="$HOME/dropbox/Config/urls-$(hostname)"
-    target_quickmarks="$HOME/dropbox/Config/quickmarks-$(hostname)"
+    config_dir="$HOME/dotfiles-secret/dropbox/Config"
+    [[ -d "$config_dir" ]] || config_dir="$HOME/dropbox/Config"
+
+    target_urls="$config_dir/urls-$(hostname)"
+    target_quickmarks="$config_dir/quickmarks-$(hostname)"
 
     link_urls="$HOME/.config/qutebrowser/bookmarks/urls"
     link_quickmarks="$HOME/.config/qutebrowser/quickmarks"
@@ -37,7 +40,8 @@ link_bookmarks() {
 }
 
 link_userscripts() {
-    source_dir="$HOME/dropbox/Config/tampermonkey"
+    source_dir="$HOME/dotfiles-secret/dropbox/Config/tampermonkey"
+    [[ -d "$source_dir" ]] || source_dir="$HOME/dropbox/Config/tampermonkey"
     destination_dir="$HOME/.config/qutebrowser/greasemonkey"
 
     lg "Ensure $destination_dir exists"
