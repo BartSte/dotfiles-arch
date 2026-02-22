@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-. "$HOME"/dotfiles-linux/qutebrowser/helpers.sh
+. "$HOME"/dotfiles-arch/qutebrowser/helpers.sh
 
 lg "Qutebrowser: link config files"
 link_config
