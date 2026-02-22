@@ -30,9 +30,6 @@ link_bookmarks() {
     mkdir -p "$(dirname "$link_urls")"
     mkdir -p "$(dirname "$link_quickmarks")"
 
-    [[ -f "$link_urls" ]] || touch "$link_urls"
-    [[ -f "$link_quickmarks" ]] || touch "$link_quickmarks"
-
     ln -sf "$target_urls" "$link_urls"
     ln -sf "$target_quickmarks" "$link_quickmarks"
 }
@@ -56,3 +53,5 @@ link_userscripts() {
         ln -sf "$source" "$destination"
     done
 }
+
+
