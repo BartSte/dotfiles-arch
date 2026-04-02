@@ -36,6 +36,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          rm -rf "$HOME/dotfiles-arch.git"
           git clone --bare "$GITHUB_WORKSPACE" "$HOME/dotfiles-arch.git"
           mkdir -p "$HOME/dotfiles-arch"
           git --work-tree="$HOME/dotfiles-arch" --git-dir="$HOME/dotfiles-arch.git" checkout -f
