@@ -17,9 +17,14 @@ jobs:
           pacman-key --init
           pacman-key --populate archlinux
           pacman -Syu --noconfirm git curl sudo
-          # sudo shim (container runs as root)
-          echo -e '#!/bin/sh\nexec "$@"' > /usr/local/bin/sudo
-          chmod +x /usr/local/bin/sudo
+          # Create a non-root build user for AUR/makepkg (makepkg refuses root)
+          useradd -m builduser
+          echo "builduser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+          # Expose HOME to builduser for dotfiles checkout
+          chmod o+rx /root
+          # Ensure real sudo is usable (not replaced with shim) so builduser
+          # can call 'sudo pacman' from inside makepkg -si
+          chmod 4755 /usr/bin/sudo || true
 
       - name: Checkout
         uses: actions/checkout@v4
