@@ -26,6 +26,11 @@ lg "# Setup uv"
 ensure_uv_config_exists
 echo $(cat $dir/uv.txt) | xargs -n 1 uv tool install
 
+if [[ ! -d /run/systemd/system ]]; then
+    lg "# Skipping AUR install because systemd is not available in this environment"
+    exit 0
+fi
+
 lg "# Installing dependencies AUR"
 install_yay /tmp/yay
 yay -S --noconfirm $(cat $dir/aur.txt)
