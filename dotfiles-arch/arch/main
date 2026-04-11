@@ -26,6 +26,16 @@ lg "# Setup uv"
 ensure_uv_config_exists
 echo $(cat $dir/uv.txt) | xargs -n 1 uv tool install
 
+if [[ "${CI:-}" == "true" || "${GITHUB_ACTIONS:-}" == "true" ]]; then
+    lg "# Skipping AUR install in CI"
+    exit 0
+fi
+
+if [[ "$(ps -p 1 -o comm=)" != "systemd" ]]; then
+    lg "# Skipping AUR install because PID 1 is not systemd in this environment"
+    exit 0
+fi
+
 lg "# Installing dependencies AUR"
 install_yay /tmp/yay
 yay -S --noconfirm $(cat $dir/aur.txt)
