@@ -34,6 +34,7 @@ pandoc
 perl
 poppler
 powerline-fonts
+proton-vpn-cli
 python-adblock
 python-gpgme
 python-html2text
@@ -68,4 +69,3 @@ zathura-pdf-mupdf
 zsh
 zsh-autosuggestions
 zsh-syntax-highlighting
-
