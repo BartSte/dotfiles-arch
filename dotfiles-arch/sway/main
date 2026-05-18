@@ -3,7 +3,12 @@
 set -eo pipefail
 
 if is_running wsl; then
-  lg "Running in WSL, skipping DNS configuration"
+  lg "Running in WSL, skipping sway setup"
+  exit 0
+fi
+
+if is_running ci; then
+  lg "Running in CI, skipping sway setup"
   exit 0
 fi
 
