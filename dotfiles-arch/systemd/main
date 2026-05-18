@@ -73,7 +73,7 @@ enable_scripts_user() {
 
         lg "Enabling $file"
         if is_ci; then
-            run_with_log "Enabling $basename" systemctl --user enable "$basename"
+            lg "Skipping systemctl enable for $basename in CI"
             continue
         fi
 
@@ -95,7 +95,7 @@ enable_scripts_root() {
 
         lg "Enabling $file"
         if is_ci; then
-            run_with_log "Enabling $(basename "$file")" sudo systemctl enable "$(basename "$file")"
+            lg "Skipping systemctl enable for $(basename "$file") in CI"
             continue
         fi
 
