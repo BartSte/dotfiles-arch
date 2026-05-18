@@ -4,6 +4,11 @@ set -eo pipefail
 
 . "$HOME"/dotfiles-arch/qutebrowser/helpers.sh
 
+if is_running ci; then
+    lg "Qutebrowser: skipping setup in CI"
+    exit 0
+fi
+
 lg "Qutebrowser: link config files"
 link_config
 

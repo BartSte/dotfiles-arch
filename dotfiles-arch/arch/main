@@ -16,6 +16,11 @@ ensure_uv_config_exists() {
     fi
 }
 
+if [[ "${CI:-}" == "true" || "${GITHUB_ACTIONS:-}" == "true" ]]; then
+    lg "# Running in CI, skipping full Arch package bootstrap"
+    exit 0
+fi
+
 lg "# Updating pacman"
 sudo pacman -Syu --noconfirm
 
