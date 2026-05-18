@@ -4,6 +4,10 @@ set -eo pipefail
 
 had_error=0
 
+is_ci() {
+    [[ "${CI:-}" == "true" || "${GITHUB_ACTIONS:-}" == "true" ]]
+}
+
 run_with_log() {
     local description exit_code
     description=$1
@@ -68,6 +72,11 @@ enable_scripts_user() {
         run_with_log "Copying $file to $systemd_dir" cp -f "$file" "$systemd_dir"
 
         lg "Enabling $file"
+        if is_ci; then
+            run_with_log "Enabling $basename" systemctl --user enable "$basename"
+            continue
+        fi
+
         run_with_log "Enabling $basename" systemctl --user enable --now "$basename"
         run_with_log "Starting $basename" systemctl --user start "$basename"
         run_status_with_log "Getting status for $basename" systemctl --user status "$basename"
@@ -85,6 +94,11 @@ enable_scripts_root() {
         run_with_log "Copying $file to $systemd_dir" sudo cp -f "$file" "$systemd_dir"
 
         lg "Enabling $file"
+        if is_ci; then
+            run_with_log "Enabling $(basename "$file")" sudo systemctl enable "$(basename "$file")"
+            continue
+        fi
+
         run_with_log "Enabling $(basename "$file")" sudo systemctl enable --now "$(basename "$file")"
         run_with_log "Starting $(basename "$file")" sudo systemctl start "$(basename "$file")"
         run_status_with_log "Getting status for $(basename "$file")" sudo systemctl status "$(basename "$file")"
@@ -111,13 +125,17 @@ enable_scripts_user "$user_systemd_dir" "$user_script_dir"
 lg "Enabling root scripts from $root_script_dir"
 enable_scripts_root "$root_systemd_dir" "$root_script_dir"
 
-if ! is_running wsl; then
+if ! is_running wsl && ! is_ci; then
     lg "Enabling bluetooth"
     enable_bluetooth
 fi
 
-lg "Reloading systemd daemon"
-run_with_log "Reloading systemd daemon" sudo systemctl daemon-reload
+if is_ci; then
+    lg "Skipping system daemon reload in CI"
+else
+    lg "Reloading systemd daemon"
+    run_with_log "Reloading systemd daemon" sudo systemctl daemon-reload
+fi
 
 if [[ $had_error -ne 0 ]]; then
     lg "systemd/main completed with one or more failures"
