@@ -30,6 +30,7 @@ for module in "${front[@]}"; do
 
 for dir in "${all_dirs[@]}"; do
   [[ " ${front[*]} " =~ " $dir " ]] && continue
+  [[ "$dir" == "dotfiles-arch" ]] && continue
   dirs+=("$dir")
  done
 
