@@ -16,6 +16,9 @@ ensure_uv_config_exists() {
     fi
 }
 
+lg "# Ensuring worktree directory exists"
+mkdir -p "$HOME/code/worktrees"
+
 if [[ "${CI:-}" == "true" || "${GITHUB_ACTIONS:-}" == "true" ]]; then
     lg "# Running in CI, skipping full Arch package bootstrap"
     exit 0

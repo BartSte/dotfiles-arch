@@ -88,6 +88,25 @@ Contains static dotfiles used by other layers. You typically don’t clone this 
 
 General Linux config shared by all distros (zsh, tmux, git, nvim, scripts, etc.).
 
+### Project worktrees
+
+The Arch setup creates `~/code/worktrees`. From a Git project, run `tsp-wt BRANCH`
+to open that branch in its own worktree and tmux session. For example,
+`tsp-wt feature/login` creates `~/code/worktrees/PROJECT--feature-login` when the
+branch is new. Pass a project path as a second argument when you are elsewhere.
+
+`prefix + f` opens one picker with project checkouts, managed
+worktrees, and local branches of the current session's project that are not
+checked out in any worktree. Press Enter to open a project or worktree. Select
+an available branch and press `Ctrl-A` to create its worktree, or type a new
+branch name in the search field with no match and press `Ctrl-A`. Press `Ctrl-X` to remove a
+selected managed worktree. Git refuses removal if the worktree has changes.
+Removing a worktree does not delete its branch.
+
+`prefix + X` closes a session and keeps its worktree. `prefix + D` removes the
+current session's worktree and closes the session. Both removal actions are
+limited to linked worktrees directly under `~/code/worktrees`.
+
 ---
 
 ## Arch layer (dotfiles-arch)
