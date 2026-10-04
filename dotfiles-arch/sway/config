@@ -47,6 +47,7 @@ bindsym $mod+shift+e exit
 bindsym $mod+r mode "resize"
 
 bindsym $mod+space exec $menu
+bindsym $mod+s exec $menu
 bindsym Mod1+F4 kill
 bindsym Print exec screenshot "$HOME/Screenshots"
 bindsym $mod+Shift+s exec screenshot "$HOME/Screenshots"
