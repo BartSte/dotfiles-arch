@@ -90,10 +90,12 @@ General Linux config shared by all distros (zsh, tmux, git, nvim, scripts, etc.)
 
 ### Project worktrees
 
-The Arch setup creates `~/code/worktrees`. From a Git project, run `tsp-wt BRANCH`
+From a Git project, run `tsp-wt BRANCH`
 to open that branch in its own worktree and tmux session. For example,
-`tsp-wt feature/login` creates `~/code/worktrees/PROJECT--feature-login` when the
-branch is new. Pass a project path as a second argument when you are elsewhere.
+`tsp-wt feature/login` creates `worktrees/PROJECT/feature-login` beside the project
+for repositories under `~/code/work` or `~/code/personal`. Other repositories use
+`~/code/worktrees/PROJECT/feature-login`. Pass a project path as a second argument
+when you are elsewhere.
 
 `prefix + f` opens one picker with project checkouts, managed
 worktrees, and local branches of the current session's project that are not
