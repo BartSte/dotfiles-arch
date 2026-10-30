@@ -141,3 +141,6 @@ if [[ $had_error -ne 0 ]]; then
     lg "systemd/main completed with one or more failures"
     exit 1
 fi
+
+lg "Installing daily package and development-tool maintenance"
+"$HOME/dotfiles-arch/systemd/maintenance/main"

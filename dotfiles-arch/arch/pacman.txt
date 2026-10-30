@@ -49,6 +49,7 @@ rclone
 redshift
 reflector
 ripgrep
+informant
 ruby
 tar
 texlive-core

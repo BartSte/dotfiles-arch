@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+account=${1:-$(id -un)}
+[[ $# -le 1 && $account =~ ^[a-z_][a-z0-9_-]*\$?$ ]] || { printf 'Usage: dotfiles-update-status [account]\n' >&2; exit 1; }
+systemctl list-timers --all --no-pager "dotfiles-user-update@$account.timer"
+systemctl show dotfiles-package-update.service "dotfiles-user-update@$account.service" \
+    --property=Id,ActiveState,Result,ExecMainStatus,ExecMainExitTimestamp
+printf '\nLogs: sudo journalctl -u dotfiles-package-update -u dotfiles-user-update@%s\n' "$account"

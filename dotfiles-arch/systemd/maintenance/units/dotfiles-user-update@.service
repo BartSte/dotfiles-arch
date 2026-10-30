@@ -1,0 +1,18 @@
+[Unit]
+Description=Update AUR packages and Neovim plugins for %i
+Requires=dotfiles-package-update.service
+After=dotfiles-package-update.service
+
+[Service]
+Type=oneshot
+User=%i
+WorkingDirectory=~
+ExecStart=/usr/local/libexec/dotfiles-maintenance/user-updates
+Environment=PATH=/usr/local/bin:/usr/bin:/usr/sbin
+StandardInput=null
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=infinity
+TimeoutStopSec=infinity
+Nice=10
+IOSchedulingClass=idle

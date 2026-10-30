@@ -1,0 +1,16 @@
+[Unit]
+Description=Update official Arch packages after the news check
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/dotfiles-maintenance/packages
+Environment=PATH=/usr/local/bin:/usr/bin:/usr/sbin
+StandardInput=null
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=infinity
+TimeoutStopSec=infinity
+Nice=10
+IOSchedulingClass=idle

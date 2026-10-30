@@ -1,0 +1,25 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+update_packages() {
+    printf 'Check unread Arch news.\n'
+    informant check || return $?
+    printf 'Update all official repository packages.\n'
+    pacman -Syu --noconfirm || return $?
+    printf '\nConfiguration files that need review:\n'
+    find /etc -type f \( -name '*.pacnew' -o -name '*.pacsave' \) -print
+    printf '\nInstalled kernel module directories; compare with the running kernel after an update:\n'
+    printf 'Running: %s\n' "$(uname -r)"
+    if [[ -d /usr/lib/modules ]]; then
+        find /usr/lib/modules -mindepth 1 -maxdepth 1 -type d -printf '%f\n'
+    fi
+    printf 'RESULT official-packages: success; reboot remains manual.\n'
+}
+
+if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
+    [[ $EUID -eq 0 ]] || { printf 'Package updates require root.\n' >&2; exit 1; }
+    exec 9>/run/lock/dotfiles-package-update.lock
+    flock -n 9 || { printf 'Another package update is running.\n' >&2; exit 1; }
+    [[ ! -e /var/lib/pacman/db.lck ]] || { printf 'Pacman is busy. Retry after the other transaction finishes.\n' >&2; exit 1; }
+    update_packages
+fi

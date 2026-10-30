@@ -1,0 +1,53 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+fail() { printf '%s\n' "$*" >&2; exit 1; }
+[[ $EUID -eq 0 ]] || fail 'Run the maintenance/main installer with sudo access.'
+[[ $# -eq 1 && $1 =~ ^[a-z_][a-z0-9_-]*\$?$ ]] || fail 'Specify one local non-root account.'
+account=$1
+[[ $(id -u "$account") -ne 0 ]] || fail 'AUR builds must use a non-root account.'
+[[ $(ps -p 1 -o comm=) == systemd ]] || fail 'systemd must run as PID 1. Enable it in WSL first.'
+for command in pacman yay nvim informant visudo systemctl flock; do
+    command -v "$command" >/dev/null || fail "Missing $command. Run: sudo pacman -Syu --needed informant yay neovim sudo util-linux"
+done
+
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+destination=/usr/local/libexec/dotfiles-maintenance
+unit="dotfiles-user-update@$account"
+for service in dotfiles-package-update.service "$unit.service"; do
+    state=$(systemctl show "$service" --property=ActiveState --value 2>/dev/null || true)
+    case "$state" in
+        active|activating|deactivating|reloading) fail "Wait until $service finishes before reinstalling." ;;
+    esac
+done
+
+install -d -m 0755 -o root -g root "$destination"
+install -d -m 0750 -o root -g root /etc/sudoers.d
+for file in packages user-updates aur-pacman pacman-args.sh lazy-update.lua; do
+    install -m 0755 -o root -g root "$script_dir/libexec/$file" "$destination/$file.new"
+    mv -f -- "$destination/$file.new" "$destination/$file"
+done
+install -m 0755 -o root -g root "$script_dir/status" /usr/local/bin/dotfiles-update-status
+
+candidate=$(mktemp /etc/sudoers.d/dotfiles-maintenance.XXXXXX)
+trap 'rm -f -- "$candidate"' EXIT
+printf '%s ALL=(root) NOPASSWD: %s/aur-pacman\n' "$account" "$destination" > "$candidate"
+chmod 0440 "$candidate"
+visudo -cf "$candidate"
+# sudo uses the last matching rule, even when an earlier rule is more specific.
+# Load after the common "wheel" drop-in so its PASSWD tag cannot override this.
+mv -f -- "$candidate" "/etc/sudoers.d/zz-dotfiles-maintenance-$account"
+rm -f -- "/etc/sudoers.d/dotfiles-maintenance-$account"
+visudo -c
+# Test the exact delegated command without updating packages.
+runuser -u "$account" -- sudo -n "$destination/aur-pacman" --maintenance-check ||
+    fail 'The helper still requires authentication. Check sudoers include order and later matching rules.'
+
+for file in "$script_dir/units/"*; do
+    install -m 0644 -o root -g root "$file" /etc/systemd/system/
+done
+systemctl daemon-reload
+systemctl enable --now "$unit.timer"
+printf '\nDaily maintenance installed for %s.\n' "$account"
+printf 'Status: dotfiles-update-status\nLogs: sudo journalctl -u dotfiles-package-update -u %s.service\n' "$unit"
+printf 'Review unread Arch news before the first run: sudo informant read\n'

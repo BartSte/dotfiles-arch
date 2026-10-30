@@ -1,0 +1,37 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+[[ $EUID -ne 0 ]] || { printf 'AUR and Neovim updates must run as a normal user.\n' >&2; exit 1; }
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles-maintenance"
+mkdir -p "$state_dir"
+exec 9>"$state_dir/update.lock"
+flock -n 9 || { printf 'Another user update is running.\n' >&2; exit 1; }
+export GIT_TERMINAL_PROMPT=0
+export MAKEFLAGS="${MAKEFLAGS:--j2}"
+failed=0
+
+printf 'Update AUR packages, including source builds.\n'
+if yay -Sua --noconfirm --sudoloop=false --useask=false --noremovemake \
+    --answerclean None --answerdiff None --answeredit None \
+    --pacman /usr/local/libexec/dotfiles-maintenance/aur-pacman \
+    --sudo /usr/bin/sudo --sudoflags=-n </dev/null; then
+    printf 'RESULT aur: success\n'
+    printf '%s success\n' "$(date -Is)" > "$state_dir/aur.result"
+else
+    result=$?
+    printf 'RESULT aur: failed (%s); manual attention is required.\n' "$result" >&2
+    printf '%s failed %s\n' "$(date -Is)" "$result" > "$state_dir/aur.result"
+    failed=1
+fi
+
+printf '\nUpdate Neovim plugins.\n'
+if nvim --headless -i NONE '+lua dofile("/usr/local/libexec/dotfiles-maintenance/lazy-update.lua")' </dev/null; then
+    printf 'RESULT neovim: success\n'
+    printf '%s success\n' "$(date -Is)" > "$state_dir/neovim.result"
+else
+    result=$?
+    printf 'RESULT neovim: failed (%s); manual attention is required.\n' "$result" >&2
+    printf '%s failed %s\n' "$(date -Is)" "$result" > "$state_dir/neovim.result"
+    failed=1
+fi
+exit "$failed"

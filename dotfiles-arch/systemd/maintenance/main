@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ ${CI:-} == true || ${GITHUB_ACTIONS:-} == true ]]; then
+    printf 'Skip daily maintenance installation in CI.\n'
+    exit 0
+fi
+
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+account=${SUDO_USER:-$(id -un)}
+if [[ $EUID -eq 0 ]]; then
+    exec "$script_dir/install" "$account"
+fi
+exec sudo -- "$script_dir/install" "$account"

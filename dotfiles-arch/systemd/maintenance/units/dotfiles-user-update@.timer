@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Arch and development-tool updates for %i
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+RandomizedDelaySec=15m
+Persistent=true
+Unit=dotfiles-user-update@%i.service
+
+[Install]
+WantedBy=timers.target

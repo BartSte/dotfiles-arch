@@ -1,0 +1,18 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+if [[ $EUID -ne 0 ]]; then
+    # yay's unprivileged queries do not need sudo or argument restrictions.
+    exec /usr/bin/pacman "$@"
+fi
+if [[ $# -eq 1 && $1 == --maintenance-check ]]; then
+    exit 0
+fi
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+source "$script_dir/pacman-args.sh"
+if ! validate_pacman_args "$@"; then
+    printf 'Rejected unattended pacman arguments. Resolve this transaction manually.\n' >&2
+    exit 1
+fi
+export PATH=/usr/bin:/usr/sbin
+exec /usr/bin/pacman "$@"
