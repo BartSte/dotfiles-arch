@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh local Org calendars every five minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitInactiveSec=5min
+Unit=calsync.service
+
+[Install]
+WantedBy=timers.target

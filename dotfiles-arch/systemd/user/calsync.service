@@ -1,0 +1,10 @@
+[Unit]
+Description=Synchronize local Outlook calendars and export Org agendas
+
+[Service]
+Type=oneshot
+Environment="PATH=%h/dotfiles-linux/bin:%h/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+TimeoutStartSec=4min
+ExecStart=%h/dotfiles-linux/bin/mycalsync --verbose
+StandardOutput=journal
+StandardError=journal
