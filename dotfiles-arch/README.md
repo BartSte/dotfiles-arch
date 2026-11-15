@@ -25,3 +25,9 @@ Calendar exports no longer use Dropbox. Other Dropbox files retain their existin
 See the [base calendar guide](https://github.com/BartSte/dotfiles/blob/master/README.md#calendar-setup).
 
 The base repository owns `~/README.md`. This layer owns `dotfiles-arch/README.md`.
+
+## Pacman mirrors
+
+Reflector refreshes the mirror list through its packaged weekly timer.
+Run `~/dotfiles-arch/reflector/main` to install the configuration and activate it.
+See the [mirror guide](reflector/README.md) for selection rules and manual refresh commands.

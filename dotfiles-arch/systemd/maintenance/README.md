@@ -99,16 +99,17 @@ If several mirrors return HTTP 404 for a package, the local database can refer
 to a package version that the mirrors no longer serve. Refresh the mirrors,
 then force a database refresh as part of a full upgrade:
 
+Install the [Reflector configuration](../../reflector/README.md) before this repair.
+
 ```sh
 sudo cp -a /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.before-maintenance &&
-sudo reflector --country Germany,Netherlands --protocol https --age 12 --latest 20 \
-    --sort score --save /etc/pacman.d/mirrorlist &&
+sudo systemctl start reflector.service &&
 sudo pacman -Syyu --needed informant &&
 sudo informant read &&
 ~/dotfiles-arch/systemd/maintenance/main
 ```
 
-Select nearby countries for other locations. Use `-Syyu` for this repair;
+Use `-Syyu` for this repair;
 normal daily updates use `-Syu`. Do not refresh the database without completing
 the full upgrade. The scheduled jobs report download failures for manual repair.
 

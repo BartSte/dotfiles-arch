@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if (( $# != 0 )); then
+    printf 'Usage: main\n' >&2
+    exit 1
+fi
+
+if [[ ${CI:-} == true || ${GITHUB_ACTIONS:-} == true ]]; then
+    printf 'Skip Reflector installation in CI.\n'
+    exit 0
+fi
+
+if [[ ! -f /etc/arch-release ]]; then
+    printf 'Skip Reflector installation outside Arch Linux.\n'
+    exit 0
+fi
+
+if ! command -v reflector >/dev/null; then
+    printf 'Reflector is missing. Install it with: sudo pacman -Syu --needed reflector\n' >&2
+    exit 1
+fi
+
+script_directory=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+
+sudo install -d -m 755 /etc/xdg/reflector
+for file in /etc/xdg/reflector/reflector.conf /etc/pacman.d/mirrorlist; do
+    if [[ -f $file && ! -e $file.before-reflector ]]; then
+        sudo cp -a -- "$file" "$file.before-reflector"
+    fi
+done
+sudo install -o root -g root -m 644 "$script_directory/reflector.conf" /etc/xdg/reflector/reflector.conf
+
+# Verify an immediate refresh before enabling scheduled updates.
+sudo systemctl start reflector.service
+sudo systemctl enable --now reflector.timer
+systemctl is-enabled --quiet reflector.timer
+systemctl is-active --quiet reflector.timer
+printf 'Reflector refreshed the mirror list. Weekly updates are enabled.\n'
