@@ -83,6 +83,7 @@ for_window [app_id="^.*"] border pixel 0
 for_window [app_id="^launcher$"] floating enable, sticky enable, resize set 30 ppt 30 ppt, border pixel 3
 
 exec --no-startup-id waybar --config ~/.config/waybar/config.json
+exec --no-startup-id ~/dotfiles-linux/bin/ftpu-files session-start
 exec --no-startup-id gammastep -m wayland -l 52.373882:6.891711 -t 6500:2500
 
 # Touchpad settings

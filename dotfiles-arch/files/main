@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if [[ ${CI:-} == true || ${GITHUB_ACTIONS:-} == true ]] || ! command -v pacman >/dev/null; then
+    exit 0
+fi
+if [[ -n ${WSL_DISTRO_NAME:-} ]]; then
+    printf '%s\n' 'Skipping native Arch Files integration on WSL.'
+    exit 0
+fi
+"$HOME/dotfiles-linux/files/main"
+sudo systemctl enable --now tailscaled.service
+printf '%s\n' 'Sign in with sudo tailscale up if needed. Then run ftpu-files configure.'

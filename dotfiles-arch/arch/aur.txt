@@ -3,6 +3,7 @@ cyrus-sasl-xoauth2-git
 davmail
 fzf-help
 fzf-tab-git
+freefilesync-bin
 gcalcli
 kmonad-bin
 safe-rm

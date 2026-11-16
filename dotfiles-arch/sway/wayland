@@ -1,3 +1,4 @@
 # vim:filetype=swayconfig 
 include ~/dotfiles-arch/sway/config
-xwayland disable
+# FreeFileSync uses GTK2 and requires XWayland. Native Wayland apps remain native.
+xwayland enable

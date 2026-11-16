@@ -29,6 +29,7 @@ notmuch
 ntfs-3g
 odt2txt
 openldap
+openssh
 p7zip
 pandoc
 perl
@@ -36,6 +37,7 @@ poppler
 powerline-fonts
 proton-vpn-cli
 python-adblock
+python
 python-gpgme
 python-html2text
 python-markdown
@@ -51,6 +53,7 @@ reflector
 ripgrep
 ruby
 tar
+tailscale
 texlive-core
 texlive-plaingeneric
 the_silver_searcher
