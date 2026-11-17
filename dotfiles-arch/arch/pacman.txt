@@ -64,6 +64,8 @@ urlscan
 uv
 vdirsyncer
 wget
+xorg-server-xvfb
+xorg-xauth
 xorg-xwayland
 zathura
 zathura-pdf-mupdf
