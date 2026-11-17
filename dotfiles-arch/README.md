@@ -21,7 +21,7 @@ VPN service: **Proton VPN CLI** (`proton-vpn-cli`).
 
 The calendar user timer runs `mycalsync --verbose` five minutes after each completed cycle.
 It connects directly to Outlook and exports Org agendas under `~/.local/share/khalorg/agendas/`.
-Calendar exports no longer use Dropbox. Other Dropbox files retain their existing workflow.
+Working documents and notes synchronize through `~/Files` over SFTP and Tailscale.
 See the [base calendar guide](https://github.com/BartSte/dotfiles/blob/master/README.md#calendar-setup).
 
 The base repository owns `~/README.md`. This layer owns `dotfiles-arch/README.md`.

@@ -41,7 +41,7 @@ link_userscripts() {
     lg "Ensure $destination_dir exists"
     mkdir -p "$destination_dir"
 
-    lg "Ensure $source_dir exists, in case dropbox is setup later."
+    lg "Ensure $source_dir exists."
     mkdir -p "$source_dir"
 
     lg "Link all files from $source_dir to $destination_dir"
